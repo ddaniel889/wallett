@@ -2,7 +2,8 @@ import React, { useState } from "react";
 import   Button from '../components/Button';
 import   Input  from '../components/Input';
 import AccountService from "../services/account.service";
-import { toast } from 'react-toastify';
+import { ToastContainer,toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
  
 function Register() {
   const [document, setDocument] = useState("");
@@ -11,17 +12,49 @@ function Register() {
   const [lastName, setLastName] = useState("");
   const [phone, setPhone] = useState("");
   const [submitted, setSubmitted] = useState(false);
+  const [errors, setErrors] = useState<any>({});
+  const navigate = useNavigate();
+  const success = () => toast("El usuario se ha registrado");
+  const error = () => toast('No se pudo registrar el usuario, por favor intente nuevamente');
+
+  const validate = (data) => {
+    let formErrors:any = {};
+    if (data.document=='') formErrors.document = 'El documento de identidad es requerido';
+    if (data.name =='') formErrors.name = 'El nombre es requerido';
+    if (data.email =='') {
+      formErrors.email = 'Email es requerido';
+    } else if (!/\S+@\S+\.\S+/.test(data.email)) {
+      formErrors.email = 'Debe ingresar un email válido';
+    }
+    if (data.lastName =='') formErrors.lastName = 'El apellido es requerido';
+    if (data.phone =='') formErrors.phone = 'El número de celular es requerido';
+    return formErrors;
+  };
  
   const register = () => {
-    const data = { document, name, email,lastName, phone };
-    AccountService.createAccount(data)
+    const form:any = { document, name, email,lastName, phone };
+    const formErrors = validate(form);
+    if (Object.keys(formErrors).length === 0) {
+       AccountService.createAccount(form)
       .then((response) => {
         console.log(response.data);
         setSubmitted(true);
+        success()
+        setTimeout(() => {
+           navigate('/balance')
+        },1000)
       })
       .catch((e) => {
         console.log(e);
+        if(e){
+          error();
+        }
       });
+     
+    } else {
+      setErrors(formErrors);
+    }
+ 
   };
 
   const handleInputDocument = (event) => {
@@ -61,7 +94,8 @@ function Register() {
                 value={document}
                 onChange={handleInputDocument}
                 />
-          </div>
+                {errors.document && <p className="text-red-500">{errors.document}</p>}
+           </div>
 
           <div className="mb-2">
             <label className="block mb-1 font-medium">Nombre</label>
@@ -73,6 +107,7 @@ function Register() {
                 value={name}
                 onChange={handleInputName}
                 />
+                 {errors.name && <p className="text-red-500">{errors.name}</p>}
             </div>
  
           <div className="mb-2">
@@ -85,6 +120,7 @@ function Register() {
                 value={lastName}
                 onChange={handleInputLastname}
                 />
+                 {errors.lastName && <p className="text-red-500">{errors.lastName}</p>}
           </div>
 
           <div className="mb-2">
@@ -98,6 +134,7 @@ function Register() {
                 value={email}
                 onChange={handleInputEmail}
                 />
+                {errors.email && <p className="text-red-500">{errors.email}</p>}
           </div>
 
           <div className="mb-2">
@@ -110,6 +147,7 @@ function Register() {
                 value={phone}
                 onChange={handleInputPhone}
                 />
+                 {errors.phone && <p className="text-red-500">{errors.phone}</p>}
           </div>
 
            <Button
@@ -117,6 +155,7 @@ function Register() {
               onClick={register}
             />
  
+          <ToastContainer />
         </div>
     
     </div>

@@ -2,9 +2,9 @@
 import React from 'react';
 
 
-export default function Button ({ label, onClick, disabled,className })  {
+export default function Button ({ label, onClick,className })  {
   return (
-    <button className={className} onClick={onClick} disabled={disabled}>
+    <button className={className} onClick={onClick} >
       {label}
     </button>
   );

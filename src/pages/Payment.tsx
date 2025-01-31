@@ -11,7 +11,7 @@ function Register() {
  
   const payment = () => {
     const data = { concept, amount };
-    AccountService.create(data)
+    AccountService.createPayment(data)
       .then((response) => {
         console.log(response.data);
         setSubmitted(true);

@@ -1,18 +1,18 @@
 import axios from "axios";
  
 const http = axios.create({
-  baseURL: "http://localhost:8080/api",
+  baseURL: "http://localhost:8080",
   headers: {
     "Content-Type": "application/json",
   },
 });
  
 const getAll = () => {
-  return http.get("/tutorials");
+  return http.get("/account");
 };
  
 const get = (id) => {
-  return http.get(`/tutorials/${id}`);
+  return http.get(`/account/${id}`);
 };
  
 const createAccount = (data) => {
