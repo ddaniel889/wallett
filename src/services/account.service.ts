@@ -8,11 +8,11 @@ const http = axios.create({
 });
  
 const getAll = () => {
-  return http.get("/account");
+  return http.get("/customer");
 };
  
-const get = (id) => {
-  return http.get(`/account/${id}`);
+const getCustomer = (id) => {
+  return http.get(`/customer/${id}`);
 };
  
 const createAccount = (data) => {
@@ -32,9 +32,8 @@ const addMoney = (id, data) => {
  
 export default {
   getAll,
-  get,
+  getCustomer,
   createAccount,
   createPayment,
   addMoney
- 
 };

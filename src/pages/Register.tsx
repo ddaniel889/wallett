@@ -14,8 +14,8 @@ function Register() {
   const [submitted, setSubmitted] = useState(false);
   const [errors, setErrors] = useState<any>({});
   const navigate = useNavigate();
-  const success = () => toast("El usuario se ha registrado");
-  const error = () => toast('No se pudo registrar el usuario, por favor intente nuevamente');
+  const success = () => toast.success("El usuario se ha registrado");
+  const error = () => toast.error('No se pudo registrar el usuario, por favor intente nuevamente');
 
   const validate = (data) => {
     let formErrors:any = {};

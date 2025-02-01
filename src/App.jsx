@@ -28,7 +28,7 @@ function App() {
           <Link to="/register" className="hover:text-gray-300">
             Registro
           </Link>
-          <Link to="/balance" className="hover:text-gray-300">
+          <Link to="/balance/:id" className="hover:text-gray-300">
             Recarga
           </Link>
           <Link to="/payment" className="hover:text-gray-300">
@@ -42,7 +42,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Login/>}/>
           <Route path="/register" element={<Register/>}/>
-          <Route path="/balance" element={<Balance/>}/>
+          <Route path="/balance/:id" element={<Balance/>}/>
           <Route path="/payment" element={<Payment/>}/>
         
         </Routes>
