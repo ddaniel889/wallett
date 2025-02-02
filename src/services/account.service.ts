@@ -11,21 +11,21 @@ const getAll = () => {
   return http.get("/customer");
 };
  
-const getCustomer = (id) => {
+const getCustomer = (id:string) => {
   return http.get(`/customer/${id}`);
 };
  
-const createAccount = (data) => {
-  return http.post("/account", data);
+const createAccount = (data:string) => {
+  return http.post("/customer", data);
 };
 
-const createPayment = (data) => {
+const createPayment = (data:string) => {
   return http.post("/payment", data);
 };
  
  
-const addMoney = (id, data) => {
-  return http.put(`/account/${id}`, data);
+const addMoney = (id:string, data:string) => {
+  return http.patch(`/customer/${id}`, data);
 };
  
 

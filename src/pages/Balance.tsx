@@ -2,6 +2,7 @@ import React, { useState, useEffect  } from "react";
 import   Button from '../components/Button';
 import   Input  from '../components/Input';
 import   Format  from '../components/Format';
+import Navbar from "../components/Navbar";
 import { useParams, useNavigate } from "react-router-dom";
 import {ToastContainer,toast } from 'react-toastify';
 import AccountService from "../services/account.service";
@@ -13,10 +14,10 @@ function Balance() {
   const [document, setDocument] = useState("");
   const [phone, setPhone] = useState(0);
   const [amount, setAmount] = useState(0);
-  const [submitted, setSubmitted] = useState(false);
   const [errors, setErrors] = useState<any>({});
-  const success = () => toast("Recarga exitosa");
-  const error = () => toast('La recarga no pudo ser exitosa, por favor intente nuevamente');
+  const success = () => toast.success("Recarga exitosa");
+  const error = () => toast.error('La recarga no pudo ser exitosa, por favor intente nuevamente');
+  const errorUser = () => toast.error('Los datos del usuario son incorrectos, por favor intente nuevamente');
 
 
   const getCustomer = (id:string) => {
@@ -33,22 +34,35 @@ function Balance() {
     if (id) getCustomer(id);
   }, [id])
 
+
   const validate = (data) => {
     let formErrors:any = {};
     if (data.document=='') formErrors.document = 'El documento de identidad es requerido';
     if (data.phone =='') formErrors.phone = 'El número de celular es requerido';
-    if (data.amount =='') formErrors.amount = 'El monto a recargar es requerido';
+    if (data.amount ==0) formErrors.amount = 'El monto a recargar es requerido';
+    if (data.amount < 0) formErrors.amount = 'El monto a recargar no puede ser negativo';
     return formErrors;
   };
  
   const addMoney = () => {
-    const data = {document, phone, amount };
+    const data:any = {document, phone, amount };
     const formErrors = validate(data);
     if (Object.keys(formErrors).length === 0) {
-    AccountService.addMoney(id,data)
+      const amount = Number(data.amount);
+      const phone = Number(data.phone);
+      data.amount= amount;
+      data.phone= phone;
+      AccountService.addMoney(customer._id,data)
       .then((response) => {
         console.log(response.data);
-        success()
+        if(response.data.status =='Failed' ){
+          errorUser();
+        }else{
+          success();
+          setTimeout(() => {
+          location.reload();
+          },1000)
+        }
       })
       .catch((e) => {
         console.log(e);
@@ -75,11 +89,13 @@ function Balance() {
  
  
   return (
-    <div className="max-w-sm mx-auto p-4 bg-white rounded shadow">
+    <>
+     <Navbar/>
+    <div className="max-w-sm mx-auto my-8 p-4 bg-slate-100 rounded shadow">
         <div>
-          <h4 className="font-bold text-xl mb-2 text-cyan-700">Mi cuenta : <span className="font-bold text-sm mb-2 text-sky-900">{customer.name} {customer.lastName}</span></h4>
+          <h4 className="font-bold text-xl mb-2 text-cyan-700">Mi cuenta : <span className="font-bold text-sm mb-2 text-stone-700">{customer.name} {customer.lastName}</span></h4>
           <h1 className="font-bold text-sm mb-2 text-sky-900">Saldo disponible:</h1>
-          <Format amount={customer.balance} currency="USD" />
+          {customer.balance && <Format amount={customer.balance} currency="USD" />}
           <div className="mb-2">
             <label className="block mb-1 font-medium">Número de documento</label>
              <Input
@@ -127,7 +143,9 @@ function Balance() {
           <ToastContainer />  
         </div>
     </div>
+    </>
   );
+
 }
  
 export default Balance;

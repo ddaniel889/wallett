@@ -8,7 +8,7 @@ const http = axios.create({
 });
  
  
-const authUser = (data) => {
+const authUser = (data:string) => {
   return http.post("/login", data);
 };
  

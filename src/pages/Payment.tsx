@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import   Button from '../components/Button';
 import   Input  from '../components/Input';
+import Navbar from "../components/Navbar";
 import { toast } from 'react-toastify';
 import { useParams, useNavigate } from "react-router-dom";
 import AccountService from "../services/account.service";
@@ -23,7 +24,7 @@ function Register() {
   };
  
   const payment = () => {
-    const data = { concept, amount };
+    const data:any = { concept, amount };
     AccountService.createPayment(data)
       .then((response) => {
         console.log(response.data);
@@ -43,7 +44,9 @@ function Register() {
   };
  
   return (
-    <div className="max-w-sm mx-auto p-4 bg-white rounded shadow">
+    <>
+     <Navbar />
+    <div className="max-w-sm mx-auto my-8 p-4 bg-slate-100 rounded shadow">
         <div>
           <h4 className="font-bold text-xl mb-2 text-cyan-700">Pagos</h4>
           <div className="mb-2">
@@ -77,6 +80,7 @@ function Register() {
         </div>
  
     </div>
+    </>
   );
 }
  

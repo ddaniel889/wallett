@@ -9,7 +9,6 @@ import AuthService from "../services/auth.service";
 export default function Login() {
   const [document, setDocument] = useState("");
   const [phone, setPhone] = useState("");
-  const [submitted, setSubmitted] = useState(false);
   const navigate = useNavigate();
   const notFound = () => toast.error('Datos inválidos, por favor intente nuevamente');
   const error = () => toast.error('La operación no pudo ser realizada, por favor intente nuevamente');
@@ -23,19 +22,21 @@ export default function Login() {
   };
  
   const login = () => {
-    const data = { document, phone};
+    const data:any = { document, phone};
     const formErrors = validate(data);
-    setSubmitted(true);
     if (Object.keys(formErrors).length === 0) {
+      let phone = Number(data.phone);
+      data.phone= phone;
       AuthService.authUser(data)
       .then((response) => {
         console.log(response)
-        let user = response.data[0]._id;
+        if(response.data.message==='User not found'){
+            notFound();
+        }
         let message = response.data;
         if(message.length > 0){
+        let user = response.data[0]._id;
           navigate(`/balance/${user}`);
-        }else{
-          notFound();
         }
       })
       .catch((e) => {
@@ -60,7 +61,7 @@ export default function Login() {
   };
  
   return (
-    <div className="max-w-sm mx-auto p-4 bg-white rounded shadow">
+    <div className="max-w-sm mx-auto p-4 my-8 bg-slate-100 rounded shadow">
         <div>
           <h4 className="font-bold text-xl mb-2 text-cyan-700">Wallet </h4>
 
@@ -95,7 +96,7 @@ export default function Login() {
           />
           <div className="mt-1.5">
           <Link to="/register" className="font-medium text-amber-900  text-sm">
-             Registrate
+             Regístrate
           </Link>
           <ToastContainer />
           </div>

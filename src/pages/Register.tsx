@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import   Button from '../components/Button';
 import   Input  from '../components/Input';
+import { Link } from "react-router-dom";
 import AccountService from "../services/account.service";
 import { ToastContainer,toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
@@ -11,7 +12,6 @@ function Register() {
   const [email, setEmail] = useState("");
   const [lastName, setLastName] = useState("");
   const [phone, setPhone] = useState("");
-  const [submitted, setSubmitted] = useState(false);
   const [errors, setErrors] = useState<any>({});
   const navigate = useNavigate();
   const success = () => toast.success("El usuario se ha registrado");
@@ -35,13 +35,17 @@ function Register() {
     const form:any = { document, name, email,lastName, phone };
     const formErrors = validate(form);
     if (Object.keys(formErrors).length === 0) {
+      const amount = Number(form.amount);
+      const phone = Number(form.phone);
+      form.amount= amount;
+      form.phone= phone;
        AccountService.createAccount(form)
       .then((response) => {
         console.log(response.data);
-        setSubmitted(true);
+        const user = response.data.data._id;
         success()
         setTimeout(() => {
-           navigate('/balance')
+           navigate(`/balance/${user}`)
         },1000)
       })
       .catch((e) => {
@@ -80,7 +84,7 @@ function Register() {
 
  
   return (
-    <div className="max-w-sm mx-auto p-4 bg-white rounded shadow">
+    <div className="max-w-sm mx-auto p-4 bg-slate-100 rounded shadow">
         <div>
           <h4 className="font-bold text-xl mb-2 text-cyan-700">Registro</h4>
  
@@ -154,6 +158,12 @@ function Register() {
               className="bg-cyan-400 text-white px-3 py-1 rounded mt-2" label='Registrar'
               onClick={register}
             />
+              <div className="mt-1.5">
+          <Link to="/" className="font-medium text-amber-900  text-sm">
+             Volver
+          </Link>
+          <ToastContainer />
+          </div>
  
           <ToastContainer />
         </div>
