@@ -19,8 +19,12 @@ const createAccount = (data:string) => {
   return http.post("/customer", data);
 };
 
-const createPayment = (data:string) => {
-  return http.post("/payment", data);
+const sendMessage = (data:string) => {
+  return http.post("/message", data);
+};
+
+const createPayment = (id:any,data:string) => {
+  return http.patch(`/payment/${id}`, data);
 };
  
  
@@ -35,5 +39,6 @@ export default {
   getCustomer,
   createAccount,
   createPayment,
-  addMoney
+  addMoney,
+  sendMessage
 };

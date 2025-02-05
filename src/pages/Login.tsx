@@ -7,6 +7,7 @@ import { ToastContainer,toast } from 'react-toastify';
 import AuthService from "../services/auth.service";
  
 export default function Login() {
+  const id = localStorage.getItem('user');
   const [document, setDocument] = useState("");
   const [phone, setPhone] = useState("");
   const navigate = useNavigate();
@@ -25,7 +26,7 @@ export default function Login() {
     const data:any = { document, phone};
     const formErrors = validate(data);
     if (Object.keys(formErrors).length === 0) {
-      let phone = Number(data.phone);
+      const phone = Number(data.phone);
       data.phone= phone;
       AuthService.authUser(data)
       .then((response) => {
@@ -33,10 +34,13 @@ export default function Login() {
         if(response.data.message==='User not found'){
             notFound();
         }
-        let message = response.data;
+        const message = response.data;
         if(message.length > 0){
-        let user = response.data[0]._id;
-          navigate(`/balance/${user}`);
+        const user:string = response.data[0]._id;
+        const session = response.data[1];
+        localStorage.setItem("session",session);
+        localStorage.setItem("user",user);
+        navigate('/balance');
         }
       })
       .catch((e) => {
@@ -63,7 +67,7 @@ export default function Login() {
   return (
     <div className="max-w-sm mx-auto p-4 my-8 bg-slate-100 rounded shadow">
         <div>
-          <h4 className="font-bold text-xl mb-2 text-cyan-700">Wallet </h4>
+          <h4 className="font-bold text-xl mb-2 text-cyan-700">E-Wallet </h4>
 
           <div className="mb-2">
             <label className="block mb-1 font-medium">Número de documento</label>

@@ -35,17 +35,18 @@ function Register() {
     const form:any = { document, name, email,lastName, phone };
     const formErrors = validate(form);
     if (Object.keys(formErrors).length === 0) {
-      const amount = Number(form.amount);
       const phone = Number(form.phone);
-      form.amount= amount;
       form.phone= phone;
        AccountService.createAccount(form)
       .then((response) => {
-        console.log(response.data);
+        console.log(response);
         const user = response.data.data._id;
+        const session = response.data.session;
+        localStorage.setItem("session",session);
+        localStorage.setItem("user",user);
         success()
         setTimeout(() => {
-           navigate(`/balance/${user}`)
+           navigate('/balance')
         },1000)
       })
       .catch((e) => {
